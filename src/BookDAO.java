@@ -1,4 +1,6 @@
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class BookDAO {
@@ -28,6 +30,36 @@ public class BookDAO {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static List<Book> findAll() {
+        List<Book> books = new ArrayList<>();
+
+        var sql = "SELECT * FROM books";
+
+        try (var conn = Database.connect();
+             var stmt = conn.createStatement())
+        {
+            var rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                var book = new Book(
+                        rs.getString("isbn"),
+                        rs.getString("title"),
+                        rs.getString("description"),
+                        rs.getString("author"),
+                        rs.getDate("published_date").toLocalDate(),
+                        rs.getString("publisher"),
+                        rs.getInt("available")
+                );
+                books.add(book);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return books;
     }
 
     public static String insert(Book book) {
