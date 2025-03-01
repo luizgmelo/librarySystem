@@ -108,4 +108,22 @@ public class BookDAO {
         }
         return affectedRows;
     }
+
+    public static int delete(String isbn) {
+        var sql = "DELETE FROM books WHERE isbn = ?";
+
+        int numberDeletedRows = 0;
+
+        try (var conn = Database.connect();
+             var pstmt = conn.prepareStatement(sql))
+        {
+            pstmt.setString(1, isbn);
+
+            numberDeletedRows = pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return numberDeletedRows;
+    }
 }
