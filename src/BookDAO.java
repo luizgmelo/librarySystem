@@ -86,4 +86,26 @@ public class BookDAO {
         }
         return "-1";
     }
+
+    public static int update(String isbn, String title, Integer available) {
+
+        var sql = "UPDATE books "
+                + "SET title = ?, available = ? "
+                + "WHERE isbn = ?";
+
+        int affectedRows = 0;
+
+        try (var conn = Database.connect();
+             var pstm = conn.prepareStatement(sql))
+        {
+            pstm.setString(1, title);
+            pstm.setInt(2, available);
+            pstm.setString(3, isbn);
+
+            affectedRows = pstm.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return affectedRows;
+    }
 }
